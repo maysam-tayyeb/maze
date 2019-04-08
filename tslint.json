@@ -1,0 +1,117 @@
+{
+  "extends": [
+    "tslint:recommended",
+    "tslint-react",
+    "tslint-plugin-prettier"
+  ],
+  "linterOptions": {
+    "exclude": [
+      "config/**/*.js",
+      "coverage/lcov-report/*.js",
+      "node_modules/**/*.ts"
+    ]
+  },
+  "rules": {
+    "prettier": [
+      true,
+      {
+        "tabWidth": 2,
+        "singleQuote": true
+      }
+    ],
+    "arrow-parens": [
+      true,
+      "ban-single-arg-parens"
+    ],
+    "eofline": true,
+    "import-spacing": true,
+    "indent": [
+      true,
+      "spaces",
+      2
+    ],
+    "jsx-alignment": true,
+    "jsx-boolean-value": "always",
+    "jsx-curly-spacing": "always",
+    "jsx-equals-spacing": "never",
+    "jsx-key": true,
+    "jsx-no-bind": true,
+    "jsx-no-lambda": false,
+    "jsx-no-multiline-js": false,
+    "jsx-no-string-ref": true,
+    "jsx-use-translation-function": false,
+    "jsx-self-close": true,
+    "jsx-space-before-trailing-slash": true,
+    "jsx-wrap-multiline": true,
+    "max-line-length": false,
+    "member-ordering": [
+      true,
+      {
+        "order": [
+          "private-static-field",
+          "protected-static-field",
+          "public-static-field",
+          "private-instance-field",
+          "protected-instance-field",
+          "public-instance-field",
+          "private-constructor",
+          "private-static-method",
+          "private-instance-method",
+          "protected-constructor",
+          "protected-static-method",
+          "protected-instance-method",
+          "public-constructor",
+          "public-static-method",
+          "public-instance-method"
+        ]
+      }
+    ],
+    "no-consecutive-blank-lines": true,
+    "no-console": false,
+    "no-duplicate-imports": false,
+    "no-implicit-dependencies": false,
+    "no-irregular-whitespace": true,
+    "no-object-literal-type-assertion": true,
+    "no-submodule-imports": false,
+    "no-this-assignment": false,
+    "no-trailing-whitespace": true,
+    "object-literal-key-quotes": false,
+    "object-literal-sort-keys": false,
+    "one-line": [
+      true,
+      "check-catch",
+      "check-finally",
+      "check-open-brace",
+      "check-whitespace"
+    ],
+    "ordered-imports": true,
+    "prefer-conditional-expression": true,
+    "quotemark": [
+      true,
+      "single",
+      "jsx-double"
+    ],
+    "semicolon": true,
+    "trailing-comma": [
+      true,
+      {
+        "multiline": "never",
+        "singleline": "never"
+      }
+    ],
+    "type-literal-delimiter": true,
+    "whitespace": [
+      true,
+      "check-branch",
+      "check-decl",
+      "check-operator",
+      "check-module",
+      "check-separator",
+      "check-rest-spread",
+      "check-type",
+      "check-typecast",
+      "check-type-operator",
+      "check-preblock"
+    ]
+  }
+}
