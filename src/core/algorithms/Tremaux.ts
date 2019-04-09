@@ -24,10 +24,10 @@ export default class TremauxAlgorithm {
     }
   }
 
-  public step() {
+  public step(backtrack = false) {
     const startingDirection = this.direction;
 
-    while (!this.walker.move(this.direction, false)) {
+    while (!this.walker.move(this.direction, backtrack)) {
       // Hit a wall. Turn to the right.
       this.direction++;
 
@@ -37,16 +37,9 @@ export default class TremauxAlgorithm {
 
       if (this.direction === startingDirection) {
         // We've turned in a complete circle with no new path available. Time to backtrack.
-        while (!this.walker.move(this.direction, true)) {
-          // Hit a wall. Turn to the right.
-          this.direction++;
+        this.step(true);
 
-          if (this.direction > 3) {
-            this.direction = 0;
-          }
-        }
-
-        break;
+        return;
       }
     }
 
