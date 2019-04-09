@@ -16,7 +16,6 @@ module.exports = (env, argv) => {
   return {
     mode: argv.mode,
     entry: paths.appIndexJs,
-    // Enable sourcemaps for debugging webpack's output.
     devtool: "source-map",
 
     resolve: {
@@ -62,7 +61,6 @@ module.exports = (env, argv) => {
             {
               loader: require.resolve('ts-loader'),
               options: {
-                // disable type checker - we will use it in fork plugin
                 transpileOnly: true,
               },
             },
@@ -72,7 +70,16 @@ module.exports = (env, argv) => {
           use: [
             'style-loader',
             MiniCssExtractPlugin.loader,
-            'css-loader',
+            'css-loader', {
+              loader: 'postcss-loader', // Run postcss actions
+              options: {
+                plugins: function () { // postcss plugins, can be exported to postcss.config.js
+                  return [
+                    require('autoprefixer')
+                  ];
+                }
+              }
+            },
             'sass-loader'
           ]
         }
@@ -83,7 +90,7 @@ module.exports = (env, argv) => {
       new CleanWebpackPlugin(),
       new WriteFilePlugin(),
       new CopyWebpackPlugin([
-        { from: 'static', to: 'static' }
+        { from: 'specs', to: 'specs' }
       ]),
       new MiniCssExtractPlugin({
         filename: 'css/style.[contenthash].css'

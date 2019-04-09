@@ -1,13 +1,12 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import 'normalize.css/normalize.css';
-import './components/MazeApp/MazeApp';
-import MazeApp from './components/MazeApp/MazeApp';
-import './styles/styles.scss';
+import './index.scss';
+
+import Maze from './components/Maze/Maze';
 
 const appEl = document.getElementById('app');
 
 if (appEl) {
-  ReactDOM.render(<MazeApp />, appEl);
+  ReactDOM.render(<Maze />, appEl);
 }

@@ -1,32 +1,35 @@
-import IPoint from '../models/IPoint';
+import { createArray } from '../../common/utils/Array';
+import { isOpen } from '../../common/utils/Maze';
+import IMazeSpecs from '../models/IMazeSpecs';
+import IPosition from '../models/IPosition';
 
 export default class WalkerManager {
-  private context: any;
-  private maze: any;
-  private x: number;
-  private y: number;
   private lastX: number;
   private lastY: number;
-  private visited: number[];
+  public x: number;
+  public y: number;
+  public readonly visited: number[];
+  public readonly context: CanvasRenderingContext2D;
+  public readonly mazeSpecs: IMazeSpecs;
 
-  constructor(context: any, maze: any) {
+  constructor(context: CanvasRenderingContext2D, mazeSpecs: IMazeSpecs) {
     this.context = context;
-    this.maze = maze;
-    this.x = this.maze.start.x;
-    this.y = this.maze.start.y;
+    this.mazeSpecs = mazeSpecs;
+    this.x = this.mazeSpecs.start.x;
+    this.y = this.mazeSpecs.start.y;
     this.lastX = -1;
     this.lastY = -1;
-    this.visited = createArray(this.maze.width, this.maze.height);
+    this.visited = createArray(this.mazeSpecs.width, this.mazeSpecs.height);
   }
 
   public canMove(x: number, y: number) {
-    return this.maze.isOpen(x, y) && this.visited[x][y] < 2;
+    return isOpen(this.mazeSpecs, x, y) && this.visited[x][y] < 2;
   }
 
   public init() {
     // Clear array to all zeros.
-    for (let x = 0; x < this.maze.width; x++) {
-      for (let y = 0; y < this.maze.height; y++) {
+    for (let x = 0; x < this.mazeSpecs.width; x++) {
+      for (let y = 0; y < this.mazeSpecs.height; y++) {
         this.visited[x][y] = 0;
       }
     }
@@ -74,7 +77,7 @@ export default class WalkerManager {
         this.visited[oldX][oldY] === 2 &&
         this.visited[this.x][this.y] === 1
       ) {
-        // Found an unwalked tile while backtracking. Mark our last tile back to 1 so we can visit it again to exit this path.
+        // Found an un-walked track while backtracking. Mark our last tile back to 1 so we can visit it again to exit this path.
         this.visited[oldX][oldY] = 1;
         this.context.fillStyle = 'rgb(255, 0, 0)';
         this.context.fillRect(oldX * 10, oldY * 10, 10, 10);
@@ -85,7 +88,7 @@ export default class WalkerManager {
   }
 
   public getXYForDirection(direction: number) {
-    const point: IPoint = { x: 0, y: 0 };
+    const point: IPosition = { x: 0, y: 0 };
 
     switch (direction) {
       case 0:
@@ -121,18 +124,4 @@ export default class WalkerManager {
     this.context.fillStyle = 'rgb(255, 100, 100)';
     this.context.fillRect(this.x * 10, this.y * 10, 10, 10);
   }
-}
-
-function createArray(...lengths: number[]) {
-  const arr = new Array(lengths[0] || 0);
-  let i = lengths.length;
-
-  if (lengths.length > 1) {
-    const args = Array.prototype.slice.call(lengths, 1);
-    while (i--) {
-      arr[length - 1 - i] = createArray.apply(undefined, args);
-    }
-  }
-
-  return arr;
 }

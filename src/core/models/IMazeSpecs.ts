@@ -1,10 +1,10 @@
-import IPoint from './IPoint';
+import IPosition from './IPosition';
 
 export default interface IMazeSpecs {
   width: number;
   height: number;
-  start: IPoint;
-  end: IPoint;
+  start: IPosition;
+  end: IPosition;
   speed: number;
-  map: string[];
+  map: string;
 }
