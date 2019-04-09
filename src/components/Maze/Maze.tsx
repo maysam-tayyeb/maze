@@ -12,6 +12,7 @@ import './Maze.scss';
 interface IAppState {
   loading: boolean;
   solving: boolean;
+  solved: boolean;
   mazeSpecs?: IMazeSpecs;
   context?: CanvasRenderingContext2D;
   type: string;
@@ -24,16 +25,25 @@ export default class Maze extends React.Component<{}, IAppState> {
   public state: Readonly<IAppState> = {
     loading: true,
     solving: false,
+    solved: false,
     type: 'given'
   };
 
-  public saveContext = (context: CanvasRenderingContext2D) => {
-    this.setState({
-      context
-    });
+  private initializeMaze = () => {
+    const { context, mazeSpecs } = this.state;
+    if (!context || !mazeSpecs) {
+      return;
+    }
+
+    this.drawMaze(false);
+    this.walkerManager = new WalkerManager(context, mazeSpecs);
+    this.walkerManager.init();
+
+    this.algorithm = new TremauxAlgorithm(this.walkerManager);
+    this.speed = mazeSpecs.speed;
   };
 
-  public drawMaze = (drawClear: boolean) => {
+  private drawMaze = (drawClear: boolean) => {
     const context = this.state.context!;
     const mazeSpecs = this.state.mazeSpecs!;
     const { width, height } = mazeSpecs;
@@ -51,8 +61,8 @@ export default class Maze extends React.Component<{}, IAppState> {
     }
   };
 
-  public fetchMaze = (type: string) => {
-    if (this.state.type === type) {
+  private fetchMaze = (type: string) => {
+    if (this.state.solving || this.state.type === type) {
       return;
     }
 
@@ -69,7 +79,25 @@ export default class Maze extends React.Component<{}, IAppState> {
     );
   };
 
-  public solve = () => {
+  private handleSituation = () => {
+    const { solving, solved } = this.state;
+
+    if (solving) {
+      return;
+    }
+
+    if (!solved) {
+      this.setState({ solving: true });
+      this.solve();
+    } else {
+      this.drawMaze(true);
+
+      this.setState({ solved: false });
+      this.initializeMaze();
+    }
+  };
+
+  private solve = () => {
     if (!this.algorithm.isDone()) {
       this.algorithm.step();
 
@@ -80,7 +108,14 @@ export default class Maze extends React.Component<{}, IAppState> {
       this.drawMaze(true);
 
       this.algorithm.solve();
+      this.setState({ solving: false, solved: true });
     }
+  };
+
+  public saveContext = (context: CanvasRenderingContext2D) => {
+    this.setState({
+      context
+    });
   };
 
   public componentDidMount(): void {
@@ -93,20 +128,11 @@ export default class Maze extends React.Component<{}, IAppState> {
   }
 
   public componentDidUpdate(): void {
-    const { context, mazeSpecs } = this.state;
-    if (!context || !mazeSpecs) {
-      return;
-    }
-
-    this.drawMaze(false);
-    this.walkerManager = new WalkerManager(context, mazeSpecs);
-    this.walkerManager.init();
-    this.algorithm = new TremauxAlgorithm(this.walkerManager);
-    this.speed = mazeSpecs.speed;
+    this.initializeMaze();
   }
 
   public render() {
-    const { loading, mazeSpecs } = this.state;
+    const { loading, solving, solved, mazeSpecs } = this.state;
 
     return (
       <>
@@ -133,23 +159,26 @@ export default class Maze extends React.Component<{}, IAppState> {
                   <ButtonGroup color="" className="mr-2">
                     <Button
                       ta-id="given-button"
+                      disabled={solving || solved}
                       onClick={() => this.fetchMaze('Given')}
                     >
                       Given
                     </Button>
                     <Button
                       ta-id="61x61-button"
+                      disabled={solving || solved}
                       onClick={() => this.fetchMaze('61x61')}
                     >
                       61x61
                     </Button>
                   </ButtonGroup>
                   <Button
-                    onClick={this.solve}
+                    onClick={this.handleSituation}
+                    disabled={solving}
                     color="primary"
                     ta-id="go-button"
                   >
-                    Go!
+                    {solving ? 'Solving...' : solved ? 'Reset' : 'Go!'}
                   </Button>
                 </div>
               </Jumbotron>
