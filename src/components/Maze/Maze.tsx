@@ -67,7 +67,8 @@ export default class Maze extends React.Component<{}, IAppState> {
   };
 
   private fetchMaze = (type: string) => {
-    if (this.state.solving || this.state.type === type) {
+    const { solving, solved } = this.state;
+    if (solving || solved || this.state.type === type) {
       return;
     }
 
