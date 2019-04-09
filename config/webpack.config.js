@@ -39,8 +39,8 @@ module.exports = (env, argv) => {
 
     output: {
       path: path.join(__dirname, '..', 'public'),
-      filename: 'bundle.js',
-      sourceMapFilename: 'bundle.map'
+      filename: 'bundle.[contenthash].js',
+      sourceMapFilename: 'bundle.[contenthash].map'
     },
 
     module: {
