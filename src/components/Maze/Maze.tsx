@@ -9,6 +9,11 @@ import IMazeSpecs from '../../core/models/IMazeSpecs';
 import Canvas from '../core/Canvas/Canvas';
 import './Maze.scss';
 
+enum MazeType {
+  GIVEN = 'Given',
+  SIZE_61x61 = '61x61'
+}
+
 interface IAppState {
   loading: boolean;
   solving: boolean;
@@ -119,12 +124,7 @@ export default class Maze extends React.Component<{}, IAppState> {
   };
 
   public componentDidMount(): void {
-    MazeSpecsAPI.getGivenSpecs().then(mazeSpecs =>
-      this.setState({
-        loading: false,
-        mazeSpecs
-      })
-    );
+    this.fetchMaze(MazeType.GIVEN);
   }
 
   public componentDidUpdate(): void {
@@ -159,22 +159,22 @@ export default class Maze extends React.Component<{}, IAppState> {
                   <ButtonGroup color="" className="mr-2">
                     <Button
                       ta-id="given-button"
-                      disabled={solving || solved}
-                      onClick={() => this.fetchMaze('Given')}
+                      className={solving || solved ? 'disabled' : ''}
+                      onClick={() => this.fetchMaze(MazeType.GIVEN)}
                     >
                       Given
                     </Button>
                     <Button
                       ta-id="61x61-button"
-                      disabled={solving || solved}
-                      onClick={() => this.fetchMaze('61x61')}
+                      className={solving || solved ? 'disabled' : ''}
+                      onClick={() => this.fetchMaze(MazeType.SIZE_61x61)}
                     >
                       61x61
                     </Button>
                   </ButtonGroup>
                   <Button
                     onClick={this.handleSituation}
-                    disabled={solving}
+                    className={solving ? 'disabled' : ''}
                     color="primary"
                     ta-id="go-button"
                   >
