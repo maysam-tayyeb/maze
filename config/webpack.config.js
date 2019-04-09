@@ -2,10 +2,13 @@ const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const WriteFilePlugin = require('write-file-webpack-plugin');
 const StyleLintPlugin = require('stylelint-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const express = require('express');
 
 const paths = require('./paths');
 
@@ -13,6 +16,9 @@ module.exports = (env, argv) => {
   return {
     mode: argv.mode,
     entry: paths.appIndexJs,
+    // Enable sourcemaps for debugging webpack's output.
+    devtool: "source-map",
+
     resolve: {
       extensions: [
         '.web.js',
@@ -34,8 +40,8 @@ module.exports = (env, argv) => {
 
     output: {
       path: path.join(__dirname, '..', 'public'),
-      filename: 'dist/bundle.js',
-      sourceMapFilename: 'dist/bundle.map'
+      filename: 'bundle.js',
+      sourceMapFilename: 'bundle.map'
     },
 
     module: {
@@ -75,8 +81,12 @@ module.exports = (env, argv) => {
 
     plugins: [
       new CleanWebpackPlugin(),
+      new WriteFilePlugin(),
+      new CopyWebpackPlugin([
+        { from: 'static', to: 'static' }
+      ]),
       new MiniCssExtractPlugin({
-        filename: 'dist/css/style.[contenthash].css'
+        filename: 'css/style.[contenthash].css'
       }),
       new HtmlWebpackPlugin({
         title: 'Maze',
@@ -97,7 +107,7 @@ module.exports = (env, argv) => {
     ],
 
     devServer: {
-      contentBase: path.join(__dirname, 'public')
+      contentBase: path.join(__dirname, '..', 'public')
     }
   };
 };
