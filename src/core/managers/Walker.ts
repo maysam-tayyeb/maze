@@ -13,8 +13,8 @@ export default class WalkerManager {
   public readonly context: CanvasRenderingContext2D;
   public readonly mazeSpecs: IMazeSpecs;
 
-  private fillTile(color: number, x: number, y: number) {
-    fillTile(this.context, `rgb(${color}, 0, 0)`, x, y);
+  private fillTile(redness: number, x: number, y: number) {
+    fillTile(this.context, `rgb(${redness}, 0, 0)`, x, y);
   }
 
   constructor(context: CanvasRenderingContext2D, mazeSpecs: IMazeSpecs) {
