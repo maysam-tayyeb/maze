@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Button, ButtonGroup, Jumbotron } from 'reactstrap';
 
 import MazeSpecsAPI from '../../api/MazeSpecs';
+import { fillTile } from '../../common/utils/Canvas';
 import { isBlocked } from '../../common/utils/Maze';
 import TremauxAlgorithm from '../../core/algorithms/Tremaux';
 import WalkerManager from '../../core/managers/Walker';
@@ -56,11 +57,9 @@ export default class Maze extends React.Component<{}, IAppState> {
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
         if (isBlocked(mazeSpecs, x, y)) {
-          context.fillStyle = 'black';
-          context.fillRect(x * 10, y * 10, 10, 10);
+          fillTile(context, 'black', x, y);
         } else if (drawClear) {
-          context.fillStyle = 'white';
-          context.fillRect(x * 10, y * 10, 10, 10);
+          fillTile(context, 'white', x, y);
         }
       }
     }

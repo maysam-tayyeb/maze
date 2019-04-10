@@ -1,4 +1,5 @@
 import { createArray } from '../../common/utils/Array';
+import { fillTile } from '../../common/utils/Canvas';
 import { isOpen } from '../../common/utils/Maze';
 import IMazeSpecs from '../models/IMazeSpecs';
 import IPosition from '../models/IPosition';
@@ -11,6 +12,10 @@ export default class WalkerManager {
   public readonly visited: number[];
   public readonly context: CanvasRenderingContext2D;
   public readonly mazeSpecs: IMazeSpecs;
+
+  private fillTile(color: number, x: number, y: number) {
+    fillTile(this.context, `rgb(${color}, 0, 0)`, x, y);
+  }
 
   constructor(context: CanvasRenderingContext2D, mazeSpecs: IMazeSpecs) {
     this.context = context;
@@ -59,8 +64,7 @@ export default class WalkerManager {
     }
 
     if (changed) {
-      this.context.fillStyle = 'rgb(' + (backtrack ? 100 : 255) + ', 0, 0)';
-      this.context.fillRect(oldX * 10, oldY * 10, 10, 10);
+      this.fillTile(backtrack ? 100 : 255, oldX, oldY);
 
       this.lastX = oldX;
       this.lastY = oldY;
@@ -79,8 +83,7 @@ export default class WalkerManager {
       ) {
         // Found an un-walked track while backtracking. Mark our last tile back to 1 so we can visit it again to exit this path.
         this.visited[oldX][oldY] = 1;
-        this.context.fillStyle = 'rgb(255, 0, 0)';
-        this.context.fillRect(oldX * 10, oldY * 10, 10, 10);
+        this.fillTile(255, oldX, oldY);
       }
     }
 
@@ -121,7 +124,6 @@ export default class WalkerManager {
   }
 
   public draw() {
-    this.context.fillStyle = 'rgb(255, 100, 100)';
-    this.context.fillRect(this.x * 10, this.y * 10, 10, 10);
+    this.fillTile(255, this.x, this.y);
   }
 }

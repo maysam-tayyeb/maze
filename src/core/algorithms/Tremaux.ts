@@ -1,3 +1,4 @@
+import { fillTile } from '../../common/utils/Canvas';
 import WalkerManager from '../managers/Walker';
 import IPosition from '../models/IPosition';
 
@@ -17,8 +18,7 @@ export default class TremauxAlgorithm {
     for (let x = 0; x < this.walker.mazeSpecs.width; x++) {
       for (let y = 0; y < this.walker.mazeSpecs.height; y++) {
         if (this.walker.visited[x][y] === 1) {
-          this.walker.context.fillStyle = 'red';
-          this.walker.context.fillRect(x * 10, y * 10, 10, 10);
+          fillTile(this.walker.context, 'red', x, y);
         }
       }
     }
