@@ -11,8 +11,8 @@ describe('Maze', () => {
 
   beforeEach(() => {
     mock = new MockAdapter(Axios);
-    mock.onGet('specs/givenMazeSpecs.json').reply(200, mazeSpecs);
-    mock.onGet('specs/61x61MazeSpecs.json').reply(200, mazeSpecs);
+    mock.onGet('specs/11x11.json').reply(200, mazeSpecs);
+    mock.onGet('specs/61x61.json').reply(200, mazeSpecs);
   });
 
   afterEach(() => {
@@ -31,48 +31,50 @@ describe('Maze', () => {
 
     setTimeout(() => {
       wrapper.update();
-      expect(wrapper.find('button[ta-id="go-button"]').text()).toBe('Go!');
+      expect(wrapper.find('button[data-test="go-button"]').text()).toBe('Go!');
       expect(wrapper.state('solving')).toBeFalsy();
       expect(wrapper.state('solved')).toBeFalsy();
 
-      wrapper.find('button[ta-id="go-button"]').simulate('click');
+      wrapper.find('button[data-test="go-button"]').simulate('click');
 
-      expect(wrapper.find('button[ta-id="go-button"]').text()).toBe(
+      expect(wrapper.find('button[data-test="go-button"]').text()).toBe(
         'Solving...'
       );
-      wrapper.find('button[ta-id="go-button"]').simulate('click');
+      wrapper.find('button[data-test="go-button"]').simulate('click');
       wrapper.update();
       expect(
-        wrapper.find('button[ta-id="go-button"]').hasClass('disabled')
+        wrapper.find('button[data-test="go-button"]').hasClass('disabled')
       ).toBeTruthy();
       expect(
-        wrapper.find('button[ta-id="given-button"]').hasClass('disabled')
+        wrapper.find('button[data-test="11x11-button"]').hasClass('disabled')
       ).toBeTruthy();
       expect(
-        wrapper.find('button[ta-id="61x61-button"]').hasClass('disabled')
+        wrapper.find('button[data-test="61x61-button"]').hasClass('disabled')
       ).toBeTruthy();
-      wrapper.find('button[ta-id="given-button"]').simulate('click');
-      wrapper.find('button[ta-id="61x61-button"]').simulate('click');
+      wrapper.find('button[data-test="11x11-button"]').simulate('click');
+      wrapper.find('button[data-test="61x61-button"]').simulate('click');
       wrapper.update();
       expect(wrapper.state('solving')).toBeTruthy();
       expect(wrapper.state('solved')).toBeFalsy();
 
       setTimeout(() => {
         wrapper.update();
-        expect(wrapper.find('button[ta-id="go-button"]').text()).toBe('Reset');
+        expect(wrapper.find('button[data-test="go-button"]').text()).toBe(
+          'Reset'
+        );
         expect(
-          wrapper.find('button[ta-id="go-button"]').hasClass('disabled')
+          wrapper.find('button[data-test="go-button"]').hasClass('disabled')
         ).toBeFalsy();
         expect(
-          wrapper.find('button[ta-id="given-button"]').hasClass('disabled')
+          wrapper.find('button[data-test="11x11-button"]').hasClass('disabled')
         ).toBeTruthy();
         expect(
-          wrapper.find('button[ta-id="61x61-button"]').hasClass('disabled')
+          wrapper.find('button[data-test="61x61-button"]').hasClass('disabled')
         ).toBeTruthy();
         expect(wrapper.state('solving')).toBeFalsy();
         expect(wrapper.state('solved')).toBeTruthy();
 
-        wrapper.find('button[ta-id="go-button"]').simulate('click');
+        wrapper.find('button[data-test="go-button"]').simulate('click');
         wrapper.update();
         expect(wrapper.state('solving')).toBeFalsy();
         expect(wrapper.state('solved')).toBeFalsy();

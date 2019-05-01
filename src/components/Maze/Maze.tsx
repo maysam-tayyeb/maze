@@ -1,3 +1,4 @@
+import ClassNames from 'classnames';
 import * as React from 'react';
 import { Button, ButtonGroup, Jumbotron } from 'reactstrap';
 
@@ -11,7 +12,7 @@ import Canvas from '../core/Canvas/Canvas';
 import './Maze.scss';
 
 enum MazeType {
-  GIVEN = 'Given',
+  SIZE_11x11 = '11x11',
   SIZE_61x61 = '61x61'
 }
 
@@ -32,7 +33,7 @@ export default class Maze extends React.Component<{}, IAppState> {
     loading: true,
     solving: false,
     solved: false,
-    type: 'given'
+    type: ''
   };
 
   private initializeMaze = () => {
@@ -117,6 +118,15 @@ export default class Maze extends React.Component<{}, IAppState> {
     }
   };
 
+  private getButtonClassNames = (mazeType: string) => {
+    const { loading, solving, solved, type } = this.state;
+
+    return ClassNames(
+      (loading || solving || solved) && 'disabled',
+      type === mazeType && 'active'
+    );
+  };
+
   public saveContext = (context: CanvasRenderingContext2D) => {
     this.setState({
       context
@@ -124,7 +134,7 @@ export default class Maze extends React.Component<{}, IAppState> {
   };
 
   public componentDidMount(): void {
-    this.fetchMaze(MazeType.GIVEN);
+    this.fetchMaze(MazeType.SIZE_11x11);
   }
 
   public componentDidUpdate(): void {
@@ -132,60 +142,61 @@ export default class Maze extends React.Component<{}, IAppState> {
   }
 
   public render() {
-    const { loading, solving, solved, mazeSpecs } = this.state;
+    const { loading, solving, solved, mazeSpecs, type } = this.state;
+    const button11x11ClassNames = this.getButtonClassNames(MazeType.SIZE_11x11);
+    const button61x61ClassNames = this.getButtonClassNames(MazeType.SIZE_61x61);
 
     return (
-      <>
-        {loading ? (
-          <span>...Loading</span>
-        ) : (
-          mazeSpecs && (
-            <div className="container">
-              <Jumbotron>
-                <div className="d-flex justify-content-center">
-                  <h3 className="maze__title">
-                    Maze solver using Temuax algorithm
-                  </h3>
-                </div>
-                <div className="d-flex justify-content-center maze__canvas-container">
-                  <Canvas
-                    contextRef={this.saveContext}
-                    width={mazeSpecs.width}
-                    height={mazeSpecs.height}
-                  />
-                </div>
+      <div className="container">
+        <Jumbotron>
+          <div className="d-flex">
+            <h3 className="maze__title">Maze solver using Temuax algorithm</h3>
+          </div>
 
-                <div className="d-flex justify-content-center">
-                  <ButtonGroup color="" className="mr-2">
-                    <Button
-                      ta-id="given-button"
-                      className={solving || solved ? 'disabled' : ''}
-                      onClick={() => this.fetchMaze(MazeType.GIVEN)}
-                    >
-                      Given
-                    </Button>
-                    <Button
-                      ta-id="61x61-button"
-                      className={solving || solved ? 'disabled' : ''}
-                      onClick={() => this.fetchMaze(MazeType.SIZE_61x61)}
-                    >
-                      61x61
-                    </Button>
-                  </ButtonGroup>
-                  <Button
-                    onClick={this.handleSituation}
-                    className={solving ? 'disabled' : ''}
-                    color="primary"
-                    ta-id="go-button"
-                  >
-                    {solving ? 'Solving...' : solved ? 'Reset' : 'Go!'}
-                  </Button>
-                </div>
-              </Jumbotron>
-            </div>
-          )
-        )}
-      </>
+          <div className="maze__button-bar d-flex">
+            <ButtonGroup color="" className="mr-2">
+              <Button
+                data-test="11x11-button"
+                className={button11x11ClassNames}
+                onClick={() => this.fetchMaze(MazeType.SIZE_11x11)}
+              >
+                11x11
+              </Button>
+              <Button
+                data-test="61x61-button"
+                className={button61x61ClassNames}
+                onClick={() => this.fetchMaze(MazeType.SIZE_61x61)}
+              >
+                61x61
+              </Button>
+            </ButtonGroup>
+            <Button
+              onClick={this.handleSituation}
+              className={loading || solving ? 'disabled' : ''}
+              color="primary"
+              data-test="go-button"
+            >
+              {solving ? 'Solving...' : solved ? 'Reset' : 'Go!'}
+            </Button>
+          </div>
+
+          <hr />
+
+          {loading ? (
+            <div className="maze__loading">Loading {type} specs...</div>
+          ) : (
+            mazeSpecs && (
+              <div className="maze__canvas-container d-flex">
+                <Canvas
+                  contextRef={this.saveContext}
+                  width={mazeSpecs.width}
+                  height={mazeSpecs.height}
+                />
+              </div>
+            )
+          )}
+        </Jumbotron>
+      </div>
     );
   }
 }

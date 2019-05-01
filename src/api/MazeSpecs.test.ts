@@ -16,16 +16,16 @@ describe('Maze Specs API', () => {
     mock.restore();
   });
 
-  it('gets given specs', async () => {
-    mock.onGet('specs/givenMazeSpecs.json').reply(200, mockSpecs);
+  it('gets 11x11 specs', async () => {
+    mock.onGet('specs/11x11.json').reply(200, mockSpecs);
 
-    const mazeSpecs = await MazeSpecsAPI.getGivenSpecs();
+    const mazeSpecs = await MazeSpecsAPI.get11x11Specs();
 
     expect(mazeSpecs).toEqual(mockSpecs);
   });
 
   it('gets 61x61 specs', async () => {
-    mock.onGet('specs/61x61MazeSpecs.json').reply(200, mockSpecs);
+    mock.onGet('specs/61x61.json').reply(200, mockSpecs);
 
     const mazeSpecs = await MazeSpecsAPI.get61x61Specs();
 

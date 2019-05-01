@@ -1,9 +1,10 @@
 .maze {
-  &__title {
-    //margin-bottom: 30px;
+  &__button-bar {
+    margin: 25px auto;
   }
 
-  &__canvas-container {
-    margin: 50px auto;
+  &__canvas-container,
+  &__loading {
+    margin: 40px auto 0;
   }
 }
